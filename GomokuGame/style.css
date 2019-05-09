@@ -1,0 +1,20 @@
+.board {
+  display: flex;
+}
+.cell {
+  width: 31px;
+  height: 31px;
+  border: solid 3px #000000;
+}
+
+.red {
+  background-color: red;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.white {
+  background-color: white;
+}
