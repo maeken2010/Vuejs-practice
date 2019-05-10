@@ -19,32 +19,52 @@ Vue.component('cell', {
 })
 
 Vue.component('board', {
-  props: ["boardSize"],
   data: function() {
     return {
-      cells: Array.from(new Array(this.boardSize), () => new Array(this.boardSize).fill(0)),
       turn: true,
       isEnd: false,
       boardSizeList: [5, 10, 20],
-      pickedSize: 5
+      pickedSize: 10
     }
   },
+  computed: {
+    ...Vuex.mapGetters([
+      'cells'
+    ])
+  },
+  created: function() {
+    this.initCells({ boardSize: this.pickedSize })
+  },
   methods: {
+    ...Vuex.mapMutations([
+      'initCells',
+      'changeCell'
+    ]),
+    initGame: function() {
+      this.isEnd = false
+      this.turn = true
+    },
     isGameEnd: function(cells) {
       return isGameEnd(cells)
     },
     changeColor: function(n, m, cell) {
       if (this.isEnd || cell !== 0) return
-      const newColor = this.turn ? 1 : 2
-      let a = this.cells[n]
-      a[m] = newColor
-      this.cells.splice(n, 1, a)
+      const cellColor = this.turn ? 1 : 2
+
+      this.changeCell( { n, m, cellColor } )
+
       if(this.isGameEnd(this.cells)) {
         console.log("end!")
         this.isEnd = true
         return
-      } 
+      }
       this.turn = !this.turn
+    }
+  },
+  watch: {
+    pickedSize: function (val, oldVal) {
+      this.initGame()
+      this.initCells({ boardSize: val })
     }
   },
   template: `

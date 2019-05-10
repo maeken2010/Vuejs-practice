@@ -1,19 +1,28 @@
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
+
   state: {
-    message: 'Hi'
+    cells: []
   },
 
   getters:{
-    message(state) {
-      return state.message
+    cells: state => {
+      return state.cells
+    },
+    boardSize: state => {
+      return state.cells.length
     }
   },
 
   mutations: {
-    setMessage(state, payload){
-      state.message = payload.message
+    initCells: (state, { boardSize } ) => {
+      state.cells = Array.from(new Array(boardSize), () => new Array(boardSize).fill(0))
+    },
+    changeCell: (state, { n, m, cellColor }) => {
+      let a = state.cells[n]
+      a[m] = cellColor
+      state.cells.splice(n, 1, a)
     }
   }
 
