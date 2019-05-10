@@ -1,3 +1,5 @@
+import isGameEnd from './gomoku.js'
+
 Vue.component('game-info', {
   props: ['turn'],
   template: `
@@ -16,24 +18,27 @@ Vue.component('cell', {
 })
 
 Vue.component('board', {
+  props: ["boardSize"],
   data: function() {
     return {
-      cells: Array.from(new Array(10), () => new Array(10).fill(0)),
-      turn: true
+      cells: Array.from(new Array(this.boardSize), () => new Array(this.boardSize).fill(0)),
+      turn: true,
+      isEnd: false
     }
   },
   methods: {
-    isEndGame: function() {
-      // ゲーム終了判定を書く
+    isGameEnd: function(cells) {
+      return isGameEnd(cells)
     },
     changeColor: function(n, m, cell) {
-      if (cell !== 0) return
+      if (this.isEnd || cell !== 0) return
       const newColor = this.turn ? 1 : 2
       let a = this.cells[n]
       a[m] = newColor
       this.cells.splice(n, 1, a)
-      if(this.isEndGame()) {
+      if(this.isGameEnd(this.cells)) {
         console.log("end!")
+        this.isEnd = true
         return
       }
       this.turn = !this.turn
