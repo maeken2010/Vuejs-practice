@@ -3,8 +3,16 @@ import isGameEnd from './gomoku.js'
 
 Vue.component('game-info', {
   props: ['turn'],
+  computed: {
+    ...Vuex.mapGetters([
+      'isEnd'
+    ])
+  },
   template: `
-    <p> current turn : {{ this.turn ? "hoge" : "piyo" }} </p>
+    <div>
+      <p v-if="this.isEnd"> end! </p>
+      <p> current turn : {{ this.turn ? "hogeRed" : "piyoBlue" }} </p>
+    </div>
   `
 })
 
@@ -22,13 +30,13 @@ Vue.component('board', {
   data: function() {
     return {
       turn: true,
-      isEnd: false,
       boardSizeList: [5, 10, 20],
       pickedSize: 10
     }
   },
   computed: {
     ...Vuex.mapGetters([
+      'isEnd',
       'cells'
     ])
   },
@@ -37,11 +45,12 @@ Vue.component('board', {
   },
   methods: {
     ...Vuex.mapMutations([
+      'changeGameEnd',
       'initCells',
       'changeCell'
     ]),
-    initGame: function() {
-      this.isEnd = false
+    initGame: function(size) {
+      this.initCells({ boardSize: size })
       this.turn = true
     },
     isGameEnd: function(cells) {
@@ -55,7 +64,7 @@ Vue.component('board', {
 
       if(this.isGameEnd(this.cells)) {
         console.log("end!")
-        this.isEnd = true
+        this.changeGameEnd()
         return
       }
       this.turn = !this.turn
@@ -63,8 +72,7 @@ Vue.component('board', {
   },
   watch: {
     pickedSize: function (val, oldVal) {
-      this.initGame()
-      this.initCells({ boardSize: val })
+      this.initGame(val)
     }
   },
   template: `
