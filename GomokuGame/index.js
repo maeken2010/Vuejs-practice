@@ -1,3 +1,4 @@
+import store from './store.js'
 import isGameEnd from './gomoku.js'
 
 Vue.component('game-info', {
@@ -23,7 +24,9 @@ Vue.component('board', {
     return {
       cells: Array.from(new Array(this.boardSize), () => new Array(this.boardSize).fill(0)),
       turn: true,
-      isEnd: false
+      isEnd: false,
+      boardSizeList: [5, 10, 20],
+      pickedSize: 5
     }
   },
   methods: {
@@ -40,7 +43,7 @@ Vue.component('board', {
         console.log("end!")
         this.isEnd = true
         return
-      }
+      } 
       this.turn = !this.turn
     }
   },
@@ -54,11 +57,18 @@ Vue.component('board', {
         </div>
       </div>
       <game-info :turn="this.turn"></game-info>
+      <div v-for="s in this.boardSizeList">
+        <input type="radio" :id="'radio' + s" :value="s" v-model="pickedSize">
+        <label :for="s">{{ s }}</label>
+        <br>
+      </div>
+      <p> current size : {{ pickedSize }} </p>
     </div>
   `
 })
 
 var app = new Vue({
-  el: '#app'
+  el: '#app',
+  store
 })
 
