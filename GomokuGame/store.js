@@ -28,9 +28,7 @@ const store = new Vuex.Store({
       state.isEnd = false
     },
     changeCell: (state, { n, m, cellColor }) => {
-      let a = state.cells[n]
-      a[m] = cellColor
-      state.cells.splice(n, 1, a)
+      state.cells[n][m] = cellColor
     }
   }
 
